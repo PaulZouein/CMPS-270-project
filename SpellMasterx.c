@@ -59,4 +59,14 @@ void printSpellList(char spells[MAX_SPELLS][MAX_LENGTH], int spellCount)
     }
 }
 
+int getDifficultyLevel() 
+{
+    int level;
+    printf("Select difficulty level (1 for Easy, 2 for Medium, 3 for Hard): ");
+    scanf("%d", &level);
+    while ((getchar()) != '\n');  // Clear the input buffer
+    return level;
+}
+
+
 
