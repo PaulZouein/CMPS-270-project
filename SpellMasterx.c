@@ -6,19 +6,28 @@
 #include <ctype.h>
 #include <time.h>
 
-
+volatile sig_atomic_t timeout_flag = 0;
 
 #define MAX_SPELLS 100
 #define MAX_LENGTH 50
 
 // Function Prototypes
-int loadSpells(const char* filename, char spells[MAX_SPELLS][MAX_LENGTH]); 
+int loadSpells(const char* filename, char spells[MAX_SPELLS][MAX_LENGTH]);
 int isValidSpell(char lastLetter, const char* spell);
 void printSpellList(char spells[MAX_SPELLS][MAX_LENGTH], int spellCount);
 int getDifficultyLevel();
 void playGame(char spells[MAX_SPELLS][MAX_LENGTH], int spellCount, int difficulty, const char* playerName);
 int findSpellIndex(char spells[MAX_SPELLS][MAX_LENGTH], int spellCount, const char* spell);
 
+// Main function
+ // 'main' Function Specification:
+    // This is the main entry point of the program.
+    // loads the spells from a file, gets the difficulty level, and starts the game.
+
+    // Test Cases:
+    // 1. Test with valid and invalid player names.
+    // 2. Test with different file paths for loading spells (both valid and invalid).
+    // 3. Test each difficulty level selection.
 
 int main() 
 {
@@ -43,6 +52,15 @@ int main()
     return 0;
 }
 
+//Function implementations
+
+  // 'loadSpells' Function Specification:
+    // Loads spells from the specified file into the provided array. 
+    // Returns the number of spells loaded or -1 if the file cannot be opened.
+
+    // Test Cases:
+    // 1. Test with a valid file path to ensure correct loading of spells.
+    // 2. Test with an invalid file path to ensure proper error handling.
 
 int loadSpells(const char* filename, char spells[MAX_SPELLS][MAX_LENGTH]) 
 {
@@ -57,17 +75,30 @@ int loadSpells(const char* filename, char spells[MAX_SPELLS][MAX_LENGTH])
     {
         count++;
     }
-     
-     fclose(file);
-    
+
+    fclose(file);
     return count; // Return the number of spells loaded
 }
 
+// 'isValidSpell' Function Specification:
+    // Checks if the first letter of the newSpell matches the lastLetter. 
+    // It is case-insensitive.
 
-  int isValidSpell(char lastLetter, const char* newSpell) 
+    // Test Cases:
+    // 1. Test with matching and non-matching pairs of letters.
+    // 2. Include tests with uppercase and lowercase variations.
+
+int isValidSpell(char lastLetter, const char* newSpell) 
 {
     return (tolower(lastLetter) == tolower(newSpell[0]));
 }
+
+  // 'printSpellList' Function Specification:
+    // Prints all spells in the provided array. Mainly used for testing and debugging purposes.
+
+    // Test Cases:
+    // 1. Test with an array of spells to ensure all are printed correctly.
+    // 2. Test with an empty array or zero spellCount.
 
 void printSpellList(char spells[MAX_SPELLS][MAX_LENGTH], int spellCount) 
 {
@@ -76,6 +107,13 @@ void printSpellList(char spells[MAX_SPELLS][MAX_LENGTH], int spellCount)
         printf("%s\n", spells[i]);
     }
 }
+
+ // 'getDifficultyLevel' Function Specification:
+    // Prompts the user to choose a difficulty level and returns the selected level.
+
+    // Test Cases:
+    // 1. Test with valid difficulty level inputs (1, 2, 3).
+    // 2. Test with invalid inputs to see if there's proper handling and defaulting.
 
 int getDifficultyLevel() 
 {
@@ -86,17 +124,42 @@ int getDifficultyLevel()
     return level;
 }
 
+ // 'handle_alarm' Function Specification:
+    // Signal handler for alarm signals. It sets a global flag to indicate a timeout occurred.
+
+    // Test Cases:
+    // 1. Test within the game loop to ensure it correctly flags a timeout.
+    // 2. Test how the game reacts when a timeout occurs ( player loses their turn).
+
 void handle_alarm(int sig) 
 {
     printf("\nTime's up! You took too long to respond.\n");
     timeout_flag = 1;  // Set the flag to indicate a timeout has occurred
 }
 
+// 'set_alarm' Function Specification:
+    // Sets up an alarm signal that will trigger after a specified number of seconds.
+
+    // Test Cases:
+    // 1. Test with different time limits to ensure the alarm triggers correctly.
+    // 2. Test integration with handle_alarm to check if timeout_flag is set appropriately.
+
 void set_alarm(int seconds) 
 {
     signal(SIGALRM, handle_alarm); // Set the alarm signal handler
     alarm(seconds); // Set the alarm to go off after the specified seconds
 }
+
+//Game logic implementation with difficulty timing
+
+ // 'playGame' Function Specification:
+    // Manages the gameplay, including turns, checking for valid spells, and tracking game state.
+
+    // Test Cases:
+    // 1. Play a full game with different difficulty levels.
+    // 2. Test with repeated spells to ensure the game ends with a loss.
+    // 3. Test with invalid spells (not in list or wrong starting letter).
+    // 4. Test for correct handling of timeout based on difficulty;  easy: 30 seconds/turn, medium: 20 seconds/turn, hard: 10 seconds/turn.
 
 void playGame(char spells[MAX_SPELLS][MAX_LENGTH], int spellCount, int difficulty, const char* playerName) 
 {
@@ -238,7 +301,14 @@ void playGame(char spells[MAX_SPELLS][MAX_LENGTH], int spellCount, int difficult
     }
 }
 
-  int findSpellIndex(char spells[MAX_SPELLS][MAX_LENGTH], int spellCount, const char* spell) 
+ // 'findSpellIndex' Function Specification:
+    // Searches for a spell in the spells array and returns its index or -1 if not found.
+
+    // Test Cases:
+    // 1. Test with spells present in the list to check correct indices are returned.
+    // 2. Test with a spell not in the list to ensure -1 is returned.
+
+int findSpellIndex(char spells[MAX_SPELLS][MAX_LENGTH], int spellCount, const char* spell) 
 {
     for (int i = 0; i < spellCount; i++) 
     {
@@ -249,4 +319,3 @@ void playGame(char spells[MAX_SPELLS][MAX_LENGTH], int spellCount, int difficult
     }
     return -1; // If spell not found, return -1
 }
-
