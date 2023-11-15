@@ -220,3 +220,15 @@ void playGame(char spells[MAX_SPELLS][MAX_LENGTH], int spellCount, int difficult
     }
 }
 
+  int findSpellIndex(char spells[MAX_SPELLS][MAX_LENGTH], int spellCount, const char* spell) 
+{
+    for (int i = 0; i < spellCount; i++) 
+    {
+        if (strcmp(spells[i], spell) == 0) 
+        {
+            return i;
+        }
+    }
+    return -1; // If spell not found, return -1
+}
+
