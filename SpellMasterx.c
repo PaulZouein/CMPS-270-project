@@ -68,5 +68,11 @@ int getDifficultyLevel()
     return level;
 }
 
+void handle_alarm(int sig) 
+{
+    printf("\nTime's up! You took too long to respond.\n");
+    timeout_flag = 1;  // Set the flag to indicate a timeout has occurred
+}
+
 
 
