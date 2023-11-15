@@ -22,5 +22,23 @@ int findSpellIndex(char spells[MAX_SPELLS][MAX_LENGTH], int spellCount, const ch
 int main() 
 {
   //ill write it at the end.
+int loadSpells(const char* filename, char spells[MAX_SPELLS][MAX_LENGTH]) 
+{
+    FILE *file = fopen(filename, "r");
+    if (!file) 
+    {
+        return -1; // Return -1 if file opening failed
+    }
+
+    int count = 0;
+    while (count < MAX_SPELLS && fscanf(file, "%49s", spells[count]) == 1) 
+    {
+        count++;
+    }
+
+    
+    return count; // Return the number of spells loaded
+}
+
 }
 
