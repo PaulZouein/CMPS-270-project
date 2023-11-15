@@ -74,5 +74,11 @@ void handle_alarm(int sig)
     timeout_flag = 1;  // Set the flag to indicate a timeout has occurred
 }
 
+void set_alarm(int seconds) 
+{
+    signal(SIGALRM, handle_alarm); // Set the alarm signal handler
+    alarm(seconds); // Set the alarm to go off after the specified seconds
+}
+
 
 
