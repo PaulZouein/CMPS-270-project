@@ -35,7 +35,8 @@ int loadSpells(const char* filename, char spells[MAX_SPELLS][MAX_LENGTH])
     {
         count++;
     }
-
+     
+     fclose(file);
     
     return count; // Return the number of spells loaded
 }
