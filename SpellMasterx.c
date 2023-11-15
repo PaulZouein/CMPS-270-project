@@ -51,4 +51,12 @@ int loadSpells(const char* filename, char spells[MAX_SPELLS][MAX_LENGTH])
     return (tolower(lastLetter) == tolower(newSpell[0]));
 }
 
+void printSpellList(char spells[MAX_SPELLS][MAX_LENGTH], int spellCount) 
+{
+    for (int i = 0; i < spellCount; ++i) 
+    {
+        printf("%s\n", spells[i]);
+    }
+}
+
 
