@@ -22,7 +22,25 @@ int findSpellIndex(char spells[MAX_SPELLS][MAX_LENGTH], int spellCount, const ch
 
 int main() 
 {
-  //ill write it at the end.
+    char spells[MAX_SPELLS][MAX_LENGTH];
+
+    char playerName[MAX_LENGTH]; // Add a variable to store the player's name
+    printf("Enter your name: ");
+    scanf("%49s", playerName); // Get the player's name
+
+    int spellCount = loadSpells("spells.txt", spells);
+    
+    if (spellCount == -1) 
+    {
+        printf("Failed to load spells from file.\n");
+        return 1;
+    }
+
+    int difficulty = getDifficultyLevel();
+
+    playGame(spells, spellCount, difficulty, playerName);
+
+    return 0;
 }
 
 
