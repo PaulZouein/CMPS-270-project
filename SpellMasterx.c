@@ -18,3 +18,9 @@ void printSpellList(char spells[MAX_SPELLS][MAX_LENGTH], int spellCount);
 int getDifficultyLevel();
 void playGame(char spells[MAX_SPELLS][MAX_LENGTH], int spellCount, int difficulty, const char* playerName);
 int findSpellIndex(char spells[MAX_SPELLS][MAX_LENGTH], int spellCount, const char* spell);
+
+int main() 
+{
+  //ill write it at the end.
+}
+
