@@ -41,5 +41,10 @@ int loadSpells(const char* filename, char spells[MAX_SPELLS][MAX_LENGTH])
     return count; // Return the number of spells loaded
 }
 
+  int isValidSpell(char lastLetter, const char* newSpell) 
+{
+    return (tolower(lastLetter) == tolower(newSpell[0]));
+}
+
 }
 
