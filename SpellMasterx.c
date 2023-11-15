@@ -19,9 +19,13 @@ int getDifficultyLevel();
 void playGame(char spells[MAX_SPELLS][MAX_LENGTH], int spellCount, int difficulty, const char* playerName);
 int findSpellIndex(char spells[MAX_SPELLS][MAX_LENGTH], int spellCount, const char* spell);
 
+
 int main() 
 {
   //ill write it at the end.
+}
+
+
 int loadSpells(const char* filename, char spells[MAX_SPELLS][MAX_LENGTH]) 
 {
     FILE *file = fopen(filename, "r");
@@ -41,10 +45,10 @@ int loadSpells(const char* filename, char spells[MAX_SPELLS][MAX_LENGTH])
     return count; // Return the number of spells loaded
 }
 
+
   int isValidSpell(char lastLetter, const char* newSpell) 
 {
     return (tolower(lastLetter) == tolower(newSpell[0]));
 }
 
-}
 
