@@ -36,13 +36,17 @@ int main()
     char playerName[MAX_LENGTH]; // Add a variable to store the player's name
     printf("Enter your name: ");
     scanf("%49s", playerName); // Get the player's name
-
+     
     int spellCount = loadSpells("spells.txt", spells);
     
     if (spellCount == -1) 
     {
         printf("Failed to load spells from file.\n");
         return 1;
+    }else{
+        printSpellList(spells , spellCount);
+        printf("\n"); 
+
     }
 
     int difficulty = getDifficultyLevel();
@@ -104,7 +108,10 @@ void printSpellList(char spells[MAX_SPELLS][MAX_LENGTH], int spellCount)
 {
     for (int i = 0; i < spellCount; ++i) 
     {
-        printf("%s\n", spells[i]);
+        printf("%-20s\t", spells[i]);
+        if(i%5==0){
+            printf("\n");
+        }
     }
 }
 
