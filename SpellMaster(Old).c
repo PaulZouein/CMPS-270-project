@@ -18,7 +18,7 @@ void printSpellList(char spells[MAX_SPELLS][MAX_LENGTH], int spellCount);
 int getDifficultyLevel();
 void playGame(char spells[MAX_SPELLS][MAX_LENGTH], int spellCount, int difficulty, const char* playerName);
 int findSpellIndex(char spells[MAX_SPELLS][MAX_LENGTH], int spellCount, const char* spell);
-
+int findMedianValidSpell(char spells[MAX_SPELLS][MAX_LENGTH], int spellCount, char lastLetter, int usedSpells[MAX_SPELLS]);
 // Main function
  // 'main' Function Specification:
     // This is the main entry point of the program.
@@ -43,6 +43,10 @@ int main()
     {
         printf("Failed to load spells from file.\n");
         return 1;
+    }else{
+        printSpellList(spells , spellCount);
+        printf("\n"); 
+
     }
 
     int difficulty = getDifficultyLevel();
@@ -104,7 +108,10 @@ void printSpellList(char spells[MAX_SPELLS][MAX_LENGTH], int spellCount)
 {
     for (int i = 0; i < spellCount; ++i) 
     {
-        printf("%s\n", spells[i]);
+        printf("%-20s", spells[i]);
+        if(i%5==0){
+            printf("\n");
+        }
     }
 }
 
@@ -120,7 +127,6 @@ int getDifficultyLevel()
     int level;
     printf("Select difficulty level (1 for Easy, 2 for Medium, 3 for Hard): ");
     scanf("%d", &level);
-    while ((getchar()) != '\n');  // Clear the input buffer
     return level;
 }
 
@@ -177,11 +183,11 @@ void playGame(char spells[MAX_SPELLS][MAX_LENGTH], int spellCount, int difficult
                 break; // Easy - 30 seconds
 
         case 2: timeLimit = 20; 
-            printf("You have chosen Medium difficulty. You have 20 seconds per turn. Hurry up!\n");
+            printf("You have chosen Easy difficulty. You have 20 seconds per turn. Hurry up!\n");
                  break; // Medium - 20 seconds
 
         case 3: timeLimit = 10; 
-            printf("You have chosen Hard difficulty. You have 10 seconds per turn. Hurry up!\n"); 
+            printf("You have chosen Easy difficulty. You have 10 seconds per turn. Hurry up!\n"); 
                 break; // Hard - 10 seconds
 
         default: timeLimit = 30; 
@@ -220,7 +226,7 @@ void playGame(char spells[MAX_SPELLS][MAX_LENGTH], int spellCount, int difficult
             {
                 if(timeout_flag) 
                 {
-                    printf("%s, you lose! Computer wins!\n", playerName);
+                    printf("%s, you win!\n", playerName);
                 } 
                 
                 else 
@@ -236,14 +242,14 @@ void playGame(char spells[MAX_SPELLS][MAX_LENGTH], int spellCount, int difficult
 
         int spellIndex = findSpellIndex(spells, spellCount, currentSpell);
 
-       
-    if(spellIndex == -1 || usedSpells[spellIndex] || (lastSpell[0] != '\0' && !isValidSpell(lastSpell[strlen(lastSpell) - 1], currentSpell))) {
-        printf("%s, invalid or repeated spell or wrong starting letter. You lose! Computer wins!\n", playerName);
+        if(spellIndex == -1 || usedSpells[spellIndex]) 
+        {
+            printf("%s, Invalid or repeated spell. You lose! Computer wins!\n", playerName);
         break;
-    }
-
-    // Mark the spell as used
-    usedSpells[spellIndex] = 1;
+        }
+    
+     // Mark the spell as used
+     usedSpells[spellIndex] = 1;
 
 
                // Check if the spell exists in the spell list and is valid
@@ -261,38 +267,21 @@ void playGame(char spells[MAX_SPELLS][MAX_LENGTH], int spellCount, int difficult
         }
             
         } 
-        else 
-        {
-            // Computer's turn 
-            int found = 0;
-            for (int i = 0; i < spellCount && !found; i++) 
-            {
-                if (!usedSpells[i] && isValidSpell(lastSpell[strlen(lastSpell) - 1], spells[i])) 
-                {
-                    strcpy(currentSpell, spells[i]);
-                    printf("Computer's spell: %s\n", currentSpell);
-                    found = 1;
-                }
-            }
-
-    int spellIndex = findSpellIndex(spells, spellCount, currentSpell);
-
-    if (usedSpells[spellIndex]) 
+        else // Computer's turn
+{
+    int spellIndex = findMedianValidSpell(spells, spellCount, lastSpell[strlen(lastSpell) - 1], usedSpells);
+    if (spellIndex != -1) 
+    {
+        strcpy(currentSpell, spells[spellIndex]);
+        printf("Computer's spell: %s\n", currentSpell);
+        usedSpells[spellIndex] = 1; // Mark the spell as used
+    } 
+    else 
     {
         printf("Computer cannot find a valid spell. Computer loses!\n");
         break;
     }
-
-    // Mark the spell as used
-    usedSpells[spellIndex] = 1;
-
-
-            if (!found) 
-            {
-                printf("Computer cannot find a valid spell. Computer loses!\n");
-                break;
-            }
-    }
+}
          
         // Update game state
         strcpy(lastSpell, currentSpell);
@@ -318,4 +307,22 @@ int findSpellIndex(char spells[MAX_SPELLS][MAX_LENGTH], int spellCount, const ch
         }
     }
     return -1; // If spell not found, return -1
+}
+
+int findMedianValidSpell(char spells[MAX_SPELLS][MAX_LENGTH], int spellCount, char lastLetter, int usedSpells[MAX_SPELLS]) {
+    int validSpellsIndices[MAX_SPELLS];
+    int validSpellCount = 0;
+
+    for (int i = 0; i < spellCount; i++) {
+        if (!usedSpells[i] && isValidSpell(lastLetter, spells[i])) {
+            validSpellsIndices[validSpellCount++] = i;
+        }
+    }
+
+    if (validSpellCount == 0) {
+        return -1; // No valid spell found
+    }
+
+    int medianIndex = validSpellsIndices[validSpellCount / 2];
+    return medianIndex;
 }
